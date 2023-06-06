@@ -3,7 +3,7 @@ SYSSEG  equ 0x1000
 SYSLEN  equ 17
 
 start:
-    jmp BOOTSEQ:hello_world
+    jmp BOOTSEQ:go
 
 go:
 mov ax, cx

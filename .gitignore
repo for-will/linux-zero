@@ -1,6 +1,8 @@
 boot
 boot.img
 hello.asm
-hello.bin
+*.bin
+*.o
 master.img
 master.vmdk
+system
