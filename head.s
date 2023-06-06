@@ -106,7 +106,7 @@ write_char:
 
 # 以下是3个中断处理程序：默认中断、定时中断和系统调用中断
 # ignore_int是默认的中断修理程序，若系统产生了其它中断，则会在屏幕上显示一个字符‘C’。
-.align 2
+.align 4
 ignore_int:
     push %ds
     pushl %eax
@@ -119,7 +119,7 @@ ignore_int:
     iret
 
 # 这是定时中断处理程序。其中主要执行任务切换操作。
-.align 2
+.align 4
 timer_interrupt:
     push %ds
     pushl %eax
@@ -140,7 +140,7 @@ timer_interrupt:
     iret
 
 # 系统调用中断 int 0x80 处理程序。该示例只有一个显示字符功能。
-.align 2
+.align 4
 system_interrupt:
     push %ds
     pushl %edx
@@ -161,7 +161,7 @@ system_interrupt:
 current: .long 0
 scr_loc: .long 0
 
-.align 2
+.align 4
 lidt_opcode:
     .word 256*8-1
     .long idt
@@ -169,7 +169,7 @@ lgdt_opcode:
     .word (end_gdt-gdt)-1
     .long gdt
 
-.align 3
+.align 8
 idt:
     .fill 256,8,0
 
@@ -189,7 +189,7 @@ init_stack:                             # 刚进入保护模式时用于加载SS
     .word 0x10                          # 堆栈段同内核数据段。
 
 # 下面是任务0的LDT表段中的局部段描述符。
-.align 3
+.align 8
 ldt0:
     .quad 0x0000000000000000            # 第1个描述符，不用。
     .quad 0x00c0fa00000003ff            # 第2个局部代码段描述符，对应选择符是0x0f。
@@ -208,7 +208,7 @@ tss0:
 krn_stk0:
 
 # 下面是任务1的LDT表段内容和TSS段内容。
-.align 3
+.align 8
 ldt1:
     .quad 0x0000000000000000            # 第1个描述符，不用。
     .quad 0x00c0fa00000003ff            # 选择符是0x0f, 基地址 = 0x00000。
@@ -238,7 +238,7 @@ task0:
     jmp task0
 
 task1:
-    mov $70, %al
+    mov $66, %al
     int $0x80
     movl $0xfff, %ecx
 1:  loop 1b

@@ -1,3 +1,11 @@
+ubuntu:
+	nasm boot.S -o boot
+	dd if=boot of=Image bs=512 count=1 conv=notrunc
+	gcc-12 -c -o head.o -m32 head.s		
+	ld -m elf_i386 -Ttext 0 -e startup_32 -x -s -o system head.o
+	dd bs=512 if=system of=Image skip=8 seek=1 conv=notrunc
+	bochs -q -unlock
+
 gas:
 	nasm boot.S -o boot
 	dd if=boot of=Image bs=512 count=1 conv=notrunc
@@ -6,6 +14,7 @@ gas:
 	dd bs=512 if=head.bin of=Image seek=1 conv=notrunc
 	bochs -q -unlock
 	# -m elf_i386 -Ttext 0 -e startup_32 -s -x -M 
+	
 zero:
 	nasm boot.S -o boot
 	dd if=boot of=Image bs=512 count=1 conv=notrunc
