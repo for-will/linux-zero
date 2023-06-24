@@ -7,6 +7,15 @@ ubuntu:
 	dd bs=512 if=system of=Image skip=8 seek=1 conv=notrunc
 	bochs -q -unlock
 
+gnu:
+	nasm boot.S -o boot
+	dd if=boot of=Image bs=512 count=1 conv=notrunc
+	# gcc-12 -c -o head.o -m32 head.s
+	x86_64-elf-as --32 -o head.o head.s
+	x86_64-elf-ld -m elf_i386 -Ttext 0 -e startup_32 -x -s -o system head.o
+	dd bs=512 if=system of=Image skip=8 seek=1 conv=notrunc
+	bochs -q -unlock
+
 gas:
 	nasm boot.S -o boot
 	dd if=boot of=Image bs=512 count=1 conv=notrunc
